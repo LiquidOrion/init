@@ -1,0 +1,60 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class Thing {
+
+	private boolean active=true;
+	private int size=30;
+	private double speed=2.5;
+	private double curx,cury; 
+
+	public Thing(){
+		curx=0;
+		cury=0;
+	}
+
+	public Thing(int x, int y){
+		curx=x;
+		cury=y;
+	}
+
+	public void move(){
+
+
+		if(curx<210&& cury==60){
+			curx+=speed;
+		}
+		if(curx==210&& cury<510){
+			cury+=speed;
+		}
+		if(curx<600 && cury==510){
+			curx+=speed;
+		}
+
+
+		if(curx>550 |cury>550){
+			active=false;
+		}
+	}
+
+
+	public boolean isActive(){
+		return active;
+	}
+	public void paint(Graphics g){
+		if(active){
+			g.setColor(Color.CYAN);{
+				g.fillOval((int)curx,(int)cury,size,size);
+			}
+		}
+	}
+	public void moveDown() {
+		cury+=10;
+	}
+
+	public void checkPath(){
+
+		System.out.println(" " + curx + "-" + cury);
+
+	}
+}
