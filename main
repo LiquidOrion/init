@@ -1,0 +1,119 @@
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+
+public class Main extends Applet implements Runnable {
+
+	private Texture[][] grid3 = new Texture[20][20];
+	boolean running = true;
+
+	private int c = 0;
+	private Image i;
+	private Graphics db;
+
+	private Thing one = new Thing(30, 60);
+
+	public void init() {
+		setSize(600, 600);
+		generateMap();
+	}
+
+	public void start() {
+		Thread thread = new Thread(this);
+		thread.start();
+	}
+
+	public void stop() {
+		running = false;
+	}
+
+	public void update(Graphics g) {
+		if (i == null) {
+			i = createImage(this.getSize().width, this.getSize().height);
+			db = i.getGraphics();
+		}
+		// db.setColor(getBackground());
+		// db.fillRect(0,0,this.getSize().width, this.getSize().height);
+		// db.setColor(getForeground());
+		paint(db);
+
+		g.drawImage(i, 0, 0, this);
+	}
+
+	public void run() {
+
+		while (running) {
+
+			System.out.println(c++);
+
+			if (one.isActive()) {
+				one.move();
+				one.checkPath();
+			} else
+				one = new Thing(30, 60);
+
+			repaint();
+
+			try {
+				Thread.sleep(17);
+			} catch (InterruptedException e) {
+				// nothing
+				System.out.println("ERROR");
+			}
+		}
+
+	}
+
+	public void generateMap() {
+
+		int[][] mapped = {
+
+				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 },
+				{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+				{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 } };
+
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 20; j++) {
+				grid3[j][i] = new Texture(i, j, mapped[j][i]);
+			}
+		}
+	}
+
+	public void paint(Graphics g) {
+
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 20; j++) {
+				grid3[j][i].draw(g);
+			}
+		}
+
+		if (one != null) {
+			one.paint(g);
+		}
+
+		if (running == false) {
+			g.setColor(Color.WHITE);
+
+			g.drawString("END", 100, 400);
+		}
+	}
+
+}
